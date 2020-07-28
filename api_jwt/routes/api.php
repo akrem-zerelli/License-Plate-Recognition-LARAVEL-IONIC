@@ -23,5 +23,6 @@ Route::post('image_upload', 'API\ImageController@addImage');
 
 Route::middleware('jwt.auth')->group(function(){
     Route::resource('books', 'API\BookController');
+    Route::get('user/testAuth','APILoginController@testAuth');
 
 });

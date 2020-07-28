@@ -33,4 +33,7 @@ class APILoginController extends Controller
         return response()->json(compact('token'));
 
     }
+    public function testAuth(){
+        return response()->json("Authorized");
+    }
 }
