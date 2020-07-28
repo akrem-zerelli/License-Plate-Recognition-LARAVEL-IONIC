@@ -26,7 +26,7 @@ export class MyApp {
       splashScreen.hide();
     });
     this.authSevice.checkAuthentification().then((res)=>{
-      if(res===''){
+      if(res==='Unauthorized'){
         this.rootPage=LoginPage;
 
       }else{

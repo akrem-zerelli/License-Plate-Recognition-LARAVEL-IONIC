@@ -64,12 +64,37 @@ export class AuthProvider {
     });
   }
   checkAuthentification(){
-    return new Promise((resolve,reject)=>{
-      this.storage.get('token').then((value)=>{
-        this.token=value;
-        resolve(this.token);
-      })
-    })
+    return this.testAuth().then((res)=>{
+      if(res==='Authorized'){
+        return new Promise((resolve,reject)=>{
+          this.storage.get('token').then((value)=>{
+            this.token=value;
+            resolve(this.token);
+          })
+        })
+      }
+    }).catch((err)=>{
+      console.log(err)
+      return 'Unauthorized'
+    });
+    
+  }
+  testAuth(){
+    return new Promise((resolve, reject) => {
+      this.storage.get('token').then((value) => {
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Authorization", "Bearer" + value);
+        this.http.get(apiKey + "user/testAuth", {
+          headers: headers
+        }).map(res => res.json())
+          .subscribe(data => {
+            resolve(data);
+          }, (err) => {
+            reject(err);
+          });
+      });
+    });
   }
   logout(){
     this.storage.set('token','');

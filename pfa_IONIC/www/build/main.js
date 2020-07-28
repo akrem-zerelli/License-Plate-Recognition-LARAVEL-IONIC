@@ -91,8 +91,10 @@ var HomePage = /** @class */ (function () {
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__insert_insert__["a" /* InsertPage */]);
     };
     HomePage.prototype.onDelete = function (id) {
+        var _this = this;
         this.crudProvider.deletePosts(id).then(function (result) {
             console.log(result);
+            _this.reload();
         }, function (err) {
             console.log(err);
         });
@@ -891,7 +893,7 @@ var MyApp = /** @class */ (function () {
             splashScreen.hide();
         });
         this.authSevice.checkAuthentification().then(function (res) {
-            if (res === '') {
+            if (res === 'Unauthorized') {
                 _this.rootPage = __WEBPACK_IMPORTED_MODULE_6__pages_login_login__["a" /* LoginPage */];
             }
             else {
@@ -991,10 +993,35 @@ var AuthProvider = /** @class */ (function () {
     };
     AuthProvider.prototype.checkAuthentification = function () {
         var _this = this;
+        return this.testAuth().then(function (res) {
+            if (res === 'Authorized') {
+                return new Promise(function (resolve, reject) {
+                    _this.storage.get('token').then(function (value) {
+                        _this.token = value;
+                        resolve(_this.token);
+                    });
+                });
+            }
+        }).catch(function (err) {
+            console.log(err);
+            return 'Unauthorized';
+        });
+    };
+    AuthProvider.prototype.testAuth = function () {
+        var _this = this;
         return new Promise(function (resolve, reject) {
             _this.storage.get('token').then(function (value) {
-                _this.token = value;
-                resolve(_this.token);
+                var headers = new __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* Headers */]();
+                headers.append("Content-Type", "application/json");
+                headers.append("Authorization", "Bearer" + value);
+                _this.http.get(__WEBPACK_IMPORTED_MODULE_2__app_apiurls_serverurls_js__["a" /* apiKey */] + "user/testAuth", {
+                    headers: headers
+                }).map(function (res) { return res.json(); })
+                    .subscribe(function (data) {
+                    resolve(data);
+                }, function (err) {
+                    reject(err);
+                });
             });
         });
     };

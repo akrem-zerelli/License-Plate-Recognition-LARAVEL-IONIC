@@ -91,8 +91,10 @@ var HomePage = /** @class */ (function () {
         this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__insert_insert__["a" /* InsertPage */]);
     };
     HomePage.prototype.onDelete = function (id) {
+        var _this = this;
         this.crudProvider.deletePosts(id).then(function (result) {
             console.log(result);
+            _this.reload();
         }, function (err) {
             console.log(err);
         });

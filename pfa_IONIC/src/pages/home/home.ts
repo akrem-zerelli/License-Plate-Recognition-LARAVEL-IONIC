@@ -33,6 +33,7 @@ export class HomePage {
   onDelete(id){
     this.crudProvider.deletePosts(id).then((result)=>{
       console.log(result);
+      this.reload();
     },(err)=>{
       console.log(err);
     }) 
